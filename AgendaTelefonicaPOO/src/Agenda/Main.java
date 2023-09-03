@@ -1,6 +1,11 @@
 package Agenda;
 
 import java.util.*;
+import java.util.Collections;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class Main {
@@ -23,6 +28,7 @@ public class Main {
             System.out.println("|     5.Busquedad Por Numero        |");
             System.out.println("|     6.Editar Un Numero            |");
             System.out.println("|     7.Orden Alfabetico            |");
+            System.out.println("|     8.Test Base Datos             |");
             System.out.println("-------------------------------------");
 
             System.out.println("Se le solicita que digite el numero de la opcion deseada: ");
@@ -38,9 +44,10 @@ public class Main {
                         System.out.println("Apellido: ");
                         String apellido = scanner.nextLine();
                         System.out.println("Numero: ");
-                        String numero = scanner.nextLine();
+                        long numero = scanner.nextLong();
+                        scanner.nextLine();
 
-                        Contacto contactoNuevo = new Contacto(nombre,apellido,numero);
+                        Contacto contactoNuevo = new Contacto(nombre, apellido, numero);
                         agenda.agregarContacto(contactoNuevo);
                     } else {
                         System.out.println("Lo sentimos, ya has agregado 50 contactos😪.");
@@ -48,7 +55,7 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("Usted ha seleccionado la opcion 2, favor diligenciar los datos requeridos😉.");
-                    System.out.println("Digite el nombre y apellido o el numero del contacto que desea eliminar: ");
+                    System.out.println("Digite el nombre o apellido o el numero del contacto que desea eliminar: ");
                     String registro = scanner.nextLine();
                     if (agenda.validacionExistenciaContacto(registro)){
                         agenda.eliminarContacto(registro);
@@ -111,19 +118,22 @@ public class Main {
                     break;
                 case 5:
                     System.out.println("Usted ha seleccionado la opción 5, favor diligenciar los datos requeridos😉.");
-                    System.out.println("Por favor ingrese el numero del contacto a buscar: ");
+                    System.out.println("Por favor ingrese el número del contacto a buscar: ");
                     String busquedaNumero = scanner.nextLine();
 
                     List<Contacto> contactosNumeroEncontrado = new ArrayList<>();
 
-                    for (Contacto contacto : agenda.getContactos()){
-                        if (contacto.getNumero().equals(busquedaNumero)) {
+                    for (Contacto contacto : agenda.getContactos()) {
+                        long numero = Long.parseLong(busquedaNumero);
+
+                        if (contacto.getNumero() == numero) {
                             contactosNumeroEncontrado.add(contacto);
                         }
                     }
+
                     if (!contactosNumeroEncontrado.isEmpty()) {
-                        System.out.println("Contacto encontrado con el numero '" + busquedaNumero + "':");
-                        for (Contacto contactoEncontrado : contactosNumeroEncontrado){
+                        System.out.println("Contacto encontrado con el número '" + busquedaNumero + "':");
+                        for (Contacto contactoEncontrado : contactosNumeroEncontrado) {
                             System.out.println("--------------------------------");
                             System.out.println("|Nombre: " + contactoEncontrado.getNombre());
                             System.out.println("|Apellido: " + contactoEncontrado.getApellido());
@@ -131,27 +141,29 @@ public class Main {
                             System.out.println("--------------------------------");
                         }
                     } else {
-                        System.out.println("No se encontraron contactos con el numero '" + busquedaNumero + "'.");
+                        System.out.println("No se encontraron contactos con el número '" + busquedaNumero + "'.");
                     }
                     break;
+
                 case 6:
                     System.out.println("Usted ha seleccionado la opción 6, favor diligenciar los datos requeridos😉.");
-                    System.out.println("Porfavor ingrese el nombre de la persona de la cual desea editar su numero: ");
-                    String numeroContactoEditar = scanner.nextLine();
+                    System.out.println("Por favor ingrese el nombre de la persona de la cual desea editar su número: ");
+                    String nombreContactoEditar = scanner.nextLine();
 
-                    if (agenda.validacionExistenciaContacto(numeroContactoEditar)){
-                        System.out.println("Ingrese el nuevo numero de telefono📱:");
-                        String numeroNuevo = scanner.nextLine();
+                    if (agenda.validacionExistenciaContacto(nombreContactoEditar)){
+                        System.out.println("Ingrese el nuevo número de teléfono📱:");
+                        long numeroNuevo = scanner.nextLong();
+                        scanner.nextLine();
 
                         for (Contacto contacto : agenda.getContactos()) {
-                            if (contacto.getNombre().equalsIgnoreCase(numeroContactoEditar)) {
-                                contacto.setNumero(numeroNuevo);
-                                System.out.println("Numero de telefono actualizado satisfactoriamente😎.");
+                            if (contacto.getNombre().equalsIgnoreCase(nombreContactoEditar)) {
+                                contacto.cambiarNumero(numeroNuevo);
+                                System.out.println("Número de teléfono actualizado satisfactoriamente😎.");
                                 break;
                             }
                         }
                     } else {
-                        System.out.println("No se encontraron contactos con el nombre '"+ numeroContactoEditar + "'.");
+                        System.out.println("No se encontraron contactos con el nombre '"+ nombreContactoEditar + "'.");
                     }
                     break;
                 case 7:
@@ -169,7 +181,34 @@ public class Main {
                         System.out.println("--------------------------------");
                     }
                     break;
+                case 8:
+                    Connection connection = DataBase.getConnection();
 
+                    if (connection != null) {
+                        try {
+                            Statement statement = connection.createStatement();
+                            ResultSet resultSet = statement.executeQuery("SELECT * FROM agenda ORDER BY nombre, apellido");
+
+                            while (resultSet.next()) {
+                                String columna1 = resultSet.getString("numero");
+                                String columna2 = resultSet.getString("nombre");
+                                String columna3 = resultSet.getString("apellido");
+                                System.out.println("|Numero: " + columna1);
+                                System.out.println("|Nombre: " + columna2);
+                                System.out.println("|Apellido: " + columna3);
+                                System.out.println("--------------------------------");
+                            }
+
+                            resultSet.close();
+                            statement.close();
+                            connection.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("No se pudo obtener la conexión a la base de datos");
+                    }
+                    break;
                 default:
                     System.out.println("Opcion invalida🤡🤓");
             }

@@ -3,9 +3,9 @@ package Agenda;
 public class Contacto {
     private String nombre;
     private String apellido;
-    private String numero;
+    private long numero;
 
-    public Contacto (String nombre, String apellido, String numero) {
+    public Contacto (String nombre, String apellido, long numero) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.numero = numero;
@@ -19,11 +19,11 @@ public class Contacto {
         return apellido;
     }
 
-    public String getNumero() {
+    public long getNumero() {
         return numero;
     }
 
-    public void setNumero(String numero) {
+    public void cambiarNumero(long numero) {
         this.numero = numero;
     }
 }

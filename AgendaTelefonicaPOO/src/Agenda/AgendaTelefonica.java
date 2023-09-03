@@ -24,7 +24,7 @@ public class AgendaTelefonica {
         for (Contacto contacto : contactos) {
             if (contacto.getNombre().equalsIgnoreCase(registro) ||
                     contacto.getApellido().equalsIgnoreCase(registro) ||
-                    contacto.getNumero().equalsIgnoreCase(registro)) {
+                    contacto.getNumero() == Long.parseLong(registro)) {
                 contactosAEliminar.add(contacto);
             }
         }
@@ -32,12 +32,11 @@ public class AgendaTelefonica {
         contactos.removeAll(contactosAEliminar);
     }
 
-
     public boolean validacionExistenciaContacto(String registro){
         for (Contacto contacto : contactos){
             if (contacto.getNombre().equalsIgnoreCase(registro) ||
-                contacto.getApellido().equalsIgnoreCase(registro) ||
-                contacto.getNumero().equals(registro)){
+                    contacto.getApellido().equalsIgnoreCase(registro) ||
+                    String.valueOf(contacto.getNumero()).equals(registro)){
                 return true;
             }
         }
