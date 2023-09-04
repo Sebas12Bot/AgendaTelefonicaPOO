@@ -1,15 +1,14 @@
 package Agenda;
 
-import java.util.*;
-import java.util.Collections;
+import java.util.Scanner;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         AgendaTelefonica agenda = new AgendaTelefonica();
         Scanner scanner = new Scanner(System.in);
 
@@ -57,7 +56,7 @@ public class Main {
                     System.out.println("Usted ha seleccionado la opcion 2, favor diligenciar los datos requeridos😉.");
                     System.out.println("Digite el nombre o apellido o el numero del contacto que desea eliminar: ");
                     String registro = scanner.nextLine();
-                    if (agenda.validacionExistenciaContacto(registro)){
+                    if (agenda.validacionExistenciaContacto(registro)) {
                         agenda.eliminarContacto(registro);
                         System.out.println("El contacto fue eliminado satisfactoriamente😎.");
                     } else {
@@ -66,20 +65,13 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("Usted ha seleccionado la opcion 3, favor diligenciar los datos requeridos😉.");
-                    System.out.println("Porfavor ingrese el nombre del contacto a buscar: ");
+                    System.out.println("Por favor ingrese el nombre del contacto a buscar: ");
                     String busquedaNombre = scanner.nextLine();
+                    List<Contacto> contactosEncontradosPorNombre = agenda.buscarPorNombre(busquedaNombre);
 
-                    List<Contacto> contactosEncontrados = new ArrayList<>();
-
-                    for (Contacto contacto : agenda.getContactos()) {
-                        if (contacto.getNombre().equalsIgnoreCase(busquedaNombre)) {
-                            contactosEncontrados.add(contacto);
-                        }
-                    }
-
-                    if (!contactosEncontrados.isEmpty()) {
+                    if (!contactosEncontradosPorNombre.isEmpty()) {
                         System.out.println("Contactos encontrados con el nombre '" + busquedaNombre + "':");
-                        for (Contacto contactoEncontrado : contactosEncontrados) {
+                        for (Contacto contactoEncontrado : contactosEncontradosPorNombre) {
                             System.out.println("--------------------------------");
                             System.out.println("|Nombre: " + contactoEncontrado.getNombre());
                             System.out.println("|Apellido: " + contactoEncontrado.getApellido());
@@ -94,14 +86,7 @@ public class Main {
                     System.out.println("Usted ha seleccionado la opción 4, favor diligenciar los datos requeridos😉.");
                     System.out.println("Por favor ingrese el apellido del contacto a buscar: ");
                     String busquedaApellido = scanner.nextLine();
-
-                    List<Contacto> contactosApellidoEncontrados = new ArrayList<>();
-
-                    for (Contacto contacto : agenda.getContactos()) {
-                        if (contacto.getApellido().equalsIgnoreCase(busquedaApellido)) {
-                            contactosApellidoEncontrados.add(contacto);
-                        }
-                    }
+                    List<Contacto> contactosApellidoEncontrados = agenda.buscarPorApellido(busquedaApellido);
 
                     if (!contactosApellidoEncontrados.isEmpty()) {
                         System.out.println("Contactos encontrados con el apellido '" + busquedaApellido + "':");
@@ -120,16 +105,7 @@ public class Main {
                     System.out.println("Usted ha seleccionado la opción 5, favor diligenciar los datos requeridos😉.");
                     System.out.println("Por favor ingrese el número del contacto a buscar: ");
                     String busquedaNumero = scanner.nextLine();
-
-                    List<Contacto> contactosNumeroEncontrado = new ArrayList<>();
-
-                    for (Contacto contacto : agenda.getContactos()) {
-                        long numero = Long.parseLong(busquedaNumero);
-
-                        if (contacto.getNumero() == numero) {
-                            contactosNumeroEncontrado.add(contacto);
-                        }
-                    }
+                    List<Contacto> contactosNumeroEncontrado = agenda.buscarPorNumero(busquedaNumero);
 
                     if (!contactosNumeroEncontrado.isEmpty()) {
                         System.out.println("Contacto encontrado con el número '" + busquedaNumero + "':");
@@ -144,34 +120,23 @@ public class Main {
                         System.out.println("No se encontraron contactos con el número '" + busquedaNumero + "'.");
                     }
                     break;
-
                 case 6:
                     System.out.println("Usted ha seleccionado la opción 6, favor diligenciar los datos requeridos😉.");
                     System.out.println("Por favor ingrese el nombre de la persona de la cual desea editar su número: ");
                     String nombreContactoEditar = scanner.nextLine();
 
-                    if (agenda.validacionExistenciaContacto(nombreContactoEditar)){
+                    if (agenda.validacionExistenciaContacto(nombreContactoEditar)) {
                         System.out.println("Ingrese el nuevo número de teléfono📱:");
                         long numeroNuevo = scanner.nextLong();
                         scanner.nextLine();
-
-                        for (Contacto contacto : agenda.getContactos()) {
-                            if (contacto.getNombre().equalsIgnoreCase(nombreContactoEditar)) {
-                                contacto.cambiarNumero(numeroNuevo);
-                                System.out.println("Número de teléfono actualizado satisfactoriamente😎.");
-                                break;
-                            }
-                        }
+                        agenda.editarNumero(nombreContactoEditar, numeroNuevo);
                     } else {
-                        System.out.println("No se encontraron contactos con el nombre '"+ nombreContactoEditar + "'.");
+                        System.out.println("No se encontraron contactos con el nombre '" + nombreContactoEditar + "'.");
                     }
                     break;
                 case 7:
-                    System.out.println("Usted ha seleccionado la opcion 7, a continuacion se le mostraran sus contactos ordenados alfabeticamente😉.");
-                    List<Contacto> contactosOrdenados = new ArrayList<>(agenda.getContactos());
-
-                    Comparator<Contacto> comparador = (contacto1, contacto2) -> contacto1.getApellido().compareToIgnoreCase(contacto2.getApellido());
-                    Collections.sort(contactosOrdenados, comparador);
+                    System.out.println("Usted ha seleccionado la opcion 7, a continuación se le mostrarán sus contactos ordenados alfabéticamente😉.");
+                    List<Contacto> contactosOrdenados = agenda.ordenarAlfabeticamente();
 
                     for (Contacto contactoOrdenado : contactosOrdenados) {
                         System.out.println("--------------------------------");
@@ -210,10 +175,9 @@ public class Main {
                     }
                     break;
                 default:
-                    System.out.println("Opcion invalida🤡🤓");
+                    System.out.println("Opción inválida🤡🤓");
             }
-        }
-        while (opc < 7);
-        System.out.println("Hasta Pronto🎆");
+        } while (opc < 8);
+        System.out.println("¡Hasta pronto!🎆");
     }
 }
