@@ -35,7 +35,7 @@ public class AgendaTelefonica {
         contactos.removeAll(contactosAEliminar);
     }
 
-    public boolean validacionExistenciaContacto(String registro) {
+    public boolean validarExistenciaContacto(String registro) {
         for (Contacto contacto : contactos) {
             if (contacto.getNombre().equalsIgnoreCase(registro) ||
                     contacto.getApellido().equalsIgnoreCase(registro) ||

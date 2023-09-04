@@ -56,7 +56,7 @@ public class Main {
                     System.out.println("Usted ha seleccionado la opcion 2, favor diligenciar los datos requeridos😉.");
                     System.out.println("Digite el nombre o apellido o el numero del contacto que desea eliminar: ");
                     String registro = scanner.nextLine();
-                    if (agenda.validacionExistenciaContacto(registro)) {
+                    if (agenda.validarExistenciaContacto(registro)) {
                         agenda.eliminarContacto(registro);
                         System.out.println("El contacto fue eliminado satisfactoriamente😎.");
                     } else {
@@ -125,7 +125,7 @@ public class Main {
                     System.out.println("Por favor ingrese el nombre de la persona de la cual desea editar su número: ");
                     String nombreContactoEditar = scanner.nextLine();
 
-                    if (agenda.validacionExistenciaContacto(nombreContactoEditar)) {
+                    if (agenda.validarExistenciaContacto(nombreContactoEditar)) {
                         System.out.println("Ingrese el nuevo número de teléfono📱:");
                         long numeroNuevo = scanner.nextLong();
                         scanner.nextLine();
