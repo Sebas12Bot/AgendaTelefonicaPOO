@@ -1,4 +1,4 @@
-package Agenda;
+package Agenda.Dominio;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

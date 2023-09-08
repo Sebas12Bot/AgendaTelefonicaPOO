@@ -1,4 +1,4 @@
-package Agenda;
+package Agenda.Dominio;
 
 public class Contacto {
     private String nombre;
@@ -26,4 +26,5 @@ public class Contacto {
     public void cambiarNumero(long numero) {
         this.numero = numero;
     }
+
 }

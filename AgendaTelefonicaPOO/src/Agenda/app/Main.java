@@ -1,4 +1,8 @@
-package Agenda;
+package Agenda.app;
+
+import Agenda.Dominio.AgendaTelefonica;
+import Agenda.Dominio.Contacto;
+import Agenda.Dominio.DataBase;
 
 import java.util.Scanner;
 import java.util.List;

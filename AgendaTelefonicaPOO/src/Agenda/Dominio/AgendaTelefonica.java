@@ -1,4 +1,4 @@
-package Agenda;
+package Agenda.Dominio;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,10 +98,6 @@ public class AgendaTelefonica {
         Collections.sort(contactosOrdenados, comparador);
 
         return contactosOrdenados;
-    }
-
-    public List<Contacto> getContactos() {
-        return contactos;
     }
 
     public int getNumeroContactos() {
